@@ -68,6 +68,29 @@
             <p>{{ user.profile.phone|default:"Not provided" }}</p>
         </div>
         
+        <div class="profile-info">
+            <label>Department:</label>
+            <p>{{ user.profile.department|default:"Not provided" }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>Designation:</label>
+            <p>{{ user.profile.designation|default:"Not provided" }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>Joining Date:</label>
+            <p>{{ user.profile.joining_date|default:"Not provided" }}</p>
+        </div>
+
+
+
+
+
+
+
+
+
         <a href="{% url 'profile_edit' %}" class="btn btn-secondary">Edit Profile</a>
     </div>
 </body>
