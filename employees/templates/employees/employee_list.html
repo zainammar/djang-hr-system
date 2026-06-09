@@ -1,0 +1,83 @@
+{% extends 'employees/base.html' %}
+{% block title %}Employees{% endblock %}
+{% block page_title %}Employees{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>Employees</h2>
+    <div class="breadcrumb"><a href="{% url 'dashboard' %}">Home</a> › Employees</div>
+  </div>
+  <a href="{% url 'employee_create' %}" class="btn btn-primary">+ Add Employee</a>
+</div>
+
+<!-- Filter Bar -->
+<form method="get" class="filter-bar">
+  <select name="department" onchange="this.form.submit()">
+    <option value="">All Departments</option>
+    {% for dept in departments %}
+      <option value="{{ dept.pk }}" {% if dept_filter == dept.pk|stringformat:"s" %}selected{% endif %}>{{ dept.name }}</option>
+    {% endfor %}
+  </select>
+  <select name="status" onchange="this.form.submit()">
+    <option value="">All Statuses</option>
+    <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+    <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+    <option value="on_leave" {% if status_filter == 'on_leave' %}selected{% endif %}>On Leave</option>
+  </select>
+  {% if dept_filter or status_filter %}
+    <a href="{% url 'employee_list' %}" class="btn btn-outline btn-sm">Clear</a>
+  {% endif %}
+</form>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Department</th>
+        <th>Designation</th>
+        <th>Email</th>
+        <th>Date Joined</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for emp in employees %}
+      <tr>
+        <td class="text-muted text-sm">{{ emp.employee_id }}</td>
+        <td>
+          <a href="{% url 'employee_detail' emp.pk %}" class="fw-bold text-navy">
+            {{ emp.full_name }}
+          </a>
+        </td>
+        <td>{{ emp.department.name|default:"—" }}</td>
+        <td>{{ emp.designation|default:"—" }}</td>
+        <td class="text-sm">{{ emp.email }}</td>
+        <td class="text-sm">{{ emp.date_joined }}</td>
+        <td><span class="badge badge-{{ emp.status }}">{{ emp.get_status_display }}</span></td>
+        <td>
+          <div class="btn-group">
+            <a href="{% url 'employee_detail' emp.pk %}" class="btn btn-secondary btn-sm">View</a>
+            <a href="{% url 'employee_edit' emp.pk %}" class="btn btn-outline btn-sm">Edit</a>
+            <a href="{% url 'employee_delete' emp.pk %}" class="btn btn-danger btn-sm">Del</a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8">
+          <div class="empty-state">
+            <div class="empty-state-icon">👥</div>
+            <h3>No Employees Found</h3>
+            <p>Try adjusting your filters or add a new employee.</p>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

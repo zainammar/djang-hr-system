@@ -1,0 +1,174 @@
+{% extends 'employees/base.html' %}
+{% block title %}{{ emp.full_name }}{% endblock %}
+{% block page_title %}Employee Profile{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>{{ emp.full_name }}</h2>
+    <div class="breadcrumb">
+      <a href="{% url 'dashboard' %}">Home</a> › 
+      <a href="{% url 'employee_list' %}">Employees</a> › 
+      {{ emp.full_name }}
+    </div>
+  </div>
+  <div class="btn-group">
+    <a href="{% url 'employee_edit' emp.pk %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'employee_delete' emp.pk %}" class="btn btn-danger">Delete</a>
+  </div>
+</div>
+
+<!-- Profile Header -->
+<div class="profile-header">
+  <div class="row-7 grid-container" style="align-items:center;">
+    <div class="grid-item">
+      <div class="profile-avatar">{{ emp.first_name|first }}{{ emp.last_name|first }}</div>
+      <div class="profile-name">{{ emp.full_name }}</div>
+      <div class="profile-designation">{{ emp.designation|default:"Employee" }}</div>
+    </div>
+    <div class="grid-item">
+      <div style="color:var(--sage); font-size:0.75rem; margin-bottom:0.25rem;">DEPARTMENT</div>
+      <div style="color:var(--cream); font-weight:600;">{{ emp.department.name|default:"—" }}</div>
+    </div>
+    <div class="grid-item">
+      <div style="color:var(--sage); font-size:0.75rem; margin-bottom:0.25rem;">EMPLOYEE ID</div>
+      <div style="color:var(--cream); font-weight:600;">{{ emp.employee_id }}</div>
+    </div>
+    <div class="grid-item">
+      <div style="color:var(--sage); font-size:0.75rem; margin-bottom:0.25rem;">STATUS</div>
+      <span class="badge badge-{{ emp.status }}">{{ emp.get_status_display }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Info Grid -->
+<div class="row-2 grid-container" style="margin-bottom:1.5rem;">
+  <div class="grid-item card">
+    <div class="card-header"><h3>Personal Information</h3></div>
+    <div class="card-body">
+      <div class="row-2 grid-container">
+        <div class="grid-item">
+          <div class="text-xs text-muted">Email</div>
+          <div class="text-sm fw-bold">{{ emp.email }}</div>
+        </div>
+        <div class="grid-item">
+          <div class="text-xs text-muted">Phone</div>
+          <div class="text-sm fw-bold">{{ emp.phone|default:"—" }}</div>
+        </div>
+        <div class="grid-item">
+          <div class="text-xs text-muted">Gender</div>
+          <div class="text-sm fw-bold">{{ emp.get_gender_display|default:"—" }}</div>
+        </div>
+        <div class="grid-item">
+          <div class="text-xs text-muted">Date of Birth</div>
+          <div class="text-sm fw-bold">{{ emp.date_of_birth|default:"—" }}</div>
+        </div>
+      </div>
+      {% if emp.address %}
+      <div style="margin-top:1rem;">
+        <div class="text-xs text-muted">Address</div>
+        <div class="text-sm">{{ emp.address }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="grid-item card">
+    <div class="card-header"><h3>Employment Details</h3></div>
+    <div class="card-body">
+      <div class="row-2 grid-container">
+        <div class="grid-item">
+          <div class="text-xs text-muted">Date Joined</div>
+          <div class="text-sm fw-bold">{{ emp.date_joined }}</div>
+        </div>
+        <div class="grid-item">
+          <div class="text-xs text-muted">Department</div>
+          <div class="text-sm fw-bold">{{ emp.department.name|default:"—" }}</div>
+        </div>
+        <div class="grid-item">
+          <div class="text-xs text-muted">Designation</div>
+          <div class="text-sm fw-bold">{{ emp.designation|default:"—" }}</div>
+        </div>
+        <div class="grid-item">
+          <div class="text-xs text-muted">Status</div>
+          <span class="badge badge-{{ emp.status }}">{{ emp.get_status_display }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Attendance + Leaves + Payroll -->
+<div class="row-3 grid-container">
+  <!-- Attendance -->
+  <div class="grid-item card">
+    <div class="card-header">
+      <h3>Recent Attendance</h3>
+      <a href="{% url 'attendance_list' %}?employee={{ emp.pk }}" class="btn btn-outline btn-sm">All</a>
+    </div>
+    <div class="table-wrapper" style="border:none; box-shadow:none;">
+      <table>
+        <thead><tr><th>Date</th><th>Status</th><th>Hrs</th></tr></thead>
+        <tbody>
+          {% for rec in attendance %}
+          <tr>
+            <td class="text-sm">{{ rec.date }}</td>
+            <td><span class="badge badge-{{ rec.status }}">{{ rec.get_status_display }}</span></td>
+            <td class="text-sm">{{ rec.hours_worked }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-muted text-sm" style="text-align:center;padding:1rem;">No records</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Leaves -->
+  <div class="grid-item card">
+    <div class="card-header">
+      <h3>Leave Requests</h3>
+      <a href="{% url 'leave_list' %}" class="btn btn-outline btn-sm">All</a>
+    </div>
+    <div class="table-wrapper" style="border:none; box-shadow:none;">
+      <table>
+        <thead><tr><th>Type</th><th>Days</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for leave in leaves %}
+          <tr>
+            <td class="text-sm">{{ leave.get_leave_type_display }}</td>
+            <td class="text-sm">{{ leave.total_days }}</td>
+            <td><span class="badge badge-{{ leave.status }}">{{ leave.get_status_display }}</span></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-muted text-sm" style="text-align:center;padding:1rem;">No leaves</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Payroll -->
+  <div class="grid-item card">
+    <div class="card-header">
+      <h3>Payroll History</h3>
+      <a href="{% url 'payroll_list' %}" class="btn btn-outline btn-sm">All</a>
+    </div>
+    <div class="table-wrapper" style="border:none; box-shadow:none;">
+      <table>
+        <thead><tr><th>Period</th><th>Net Pay</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for p in payrolls %}
+          <tr>
+            <td class="text-sm">{{ p.month }}/{{ p.year }}</td>
+            <td class="text-sm fw-bold">{{ p.net_salary }}</td>
+            <td><span class="badge badge-{{ p.status }}">{{ p.get_status_display }}</span></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-muted text-sm" style="text-align:center;padding:1rem;">No payroll</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

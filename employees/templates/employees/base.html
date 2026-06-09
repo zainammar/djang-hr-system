@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}HR System{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/hr.css' %}">
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <h1>⚙ HR System</h1>
+      <span>Human Resources Portal</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <span class="nav-icon">🏠</span> Dashboard
+      </a>
+
+      <div class="nav-section-label">Organisation</div>
+      <a href="{% url 'department_list' %}" class="{% if 'department' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">🏢</span> Departments
+      </a>
+      <a href="{% url 'employee_list' %}" class="{% if 'employee' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">👥</span> Employees
+      </a>
+
+      <div class="nav-section-label">Workforce</div>
+      <a href="{% url 'attendance_list' %}" class="{% if 'attendance' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">📅</span> Attendance
+      </a>
+      <a href="{% url 'leave_list' %}" class="{% if 'leave' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">🌴</span> Leave Requests
+      </a>
+      <a href="{% url 'payroll_list' %}" class="{% if 'payroll' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">💰</span> Payroll
+      </a>
+
+      <div class="nav-section-label">Recruitment</div>
+      <a href="{% url 'application_list' %}" class="{% if 'application' in request.resolver_match.url_name %}active{% endif %}">
+        <span class="nav-icon">📋</span> Job Applications
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      {% if request.user.is_authenticated %}
+        Logged in as <strong>{{ request.user.username }}</strong>
+      {% endif %}
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="d-flex align-center gap-sm">
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+        <span class="topbar-title">{% block page_title %}Dashboard{% endblock %}</span>
+      </div>
+      <div class="topbar-actions">
+        <div class="topbar-user">
+          <div class="avatar-circle">{{ request.user.username|first|upper }}</div>
+          <span>{{ request.user.username }}</span>
+        </div>
+        <a href="{% url 'logout' %}" class="btn btn-outline btn-sm">Logout</a>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-content">
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="alert alert-{{ msg.tags }}">
+            {% if msg.tags == 'success' %}✅{% elif msg.tags == 'error' %}❌{% elif msg.tags == 'warning' %}⚠️{% else %}ℹ️{% endif %}
+            {{ msg }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+<script>
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+
+  hamburgerBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('active');
+  });
+
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+{% extends 'employees/base.html' %}
+{% block title %}Payroll{% endblock %}
+{% block page_title %}Payroll{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>Payroll Records</h2>
+    <div class="breadcrumb"><a href="{% url 'dashboard' %}">Home</a> › Payroll</div>
+  </div>
+  <a href="{% url 'payroll_create' %}" class="btn btn-primary">+ Create Payroll</a>
+</div>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Period</th>
+        <th>Basic Salary</th>
+        <th>Gross</th>
+        <th>Deductions</th>
+        <th>Net Pay</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in payrolls %}
+      <tr>
+        <td class="fw-bold">{{ p.employee.full_name }}</td>
+        <td class="text-sm">{{ p.month }}/{{ p.year }}</td>
+        <td class="text-sm">{{ p.basic_salary }}</td>
+        <td class="text-sm">{{ p.gross_salary }}</td>
+        <td class="text-sm" style="color:var(--danger);">-{{ p.total_deductions }}</td>
+        <td class="fw-bold text-navy">{{ p.net_salary }}</td>
+        <td><span class="badge badge-{{ p.status }}">{{ p.get_status_display }}</span></td>
+        <td>
+          <div class="btn-group">
+            <a href="{% url 'payroll_detail' p.pk %}" class="btn btn-secondary btn-sm">View</a>
+            <a href="{% url 'payroll_edit' p.pk %}" class="btn btn-outline btn-sm">Edit</a>
+            <a href="{% url 'payroll_delete' p.pk %}" class="btn btn-danger btn-sm">Del</a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8">
+          <div class="empty-state">
+            <div class="empty-state-icon">💰</div>
+            <h3>No Payroll Records</h3>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

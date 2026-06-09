@@ -1,0 +1,73 @@
+{% extends 'employees/base.html' %}
+{% block title %}Payslip — {{ payroll.employee.full_name }}{% endblock %}
+{% block page_title %}Payslip{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>Pay Slip</h2>
+    <div class="breadcrumb"><a href="{% url 'dashboard' %}">Home</a> › <a href="{% url 'payroll_list' %}">Payroll</a> › Slip</div>
+  </div>
+  <div class="btn-group">
+    <a href="{% url 'payroll_edit' payroll.pk %}" class="btn btn-outline">Edit</a>
+    <a href="{% url 'payroll_list' %}" class="btn btn-secondary">← Back</a>
+  </div>
+</div>
+
+<div class="payslip">
+  <div class="payslip-header">
+    <h2>PAY SLIP</h2>
+    <p>Period: {{ payroll.month }} / {{ payroll.year }}</p>
+  </div>
+
+  <div class="payslip-body">
+    <!-- Employee Info -->
+    <div class="row-2 grid-container" style="margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid var(--border);">
+      <div class="grid-item">
+        <div class="text-xs text-muted">Employee Name</div>
+        <div class="fw-bold">{{ payroll.employee.full_name }}</div>
+      </div>
+      <div class="grid-item">
+        <div class="text-xs text-muted">Employee ID</div>
+        <div class="fw-bold">{{ payroll.employee.employee_id }}</div>
+      </div>
+      <div class="grid-item">
+        <div class="text-xs text-muted">Department</div>
+        <div class="fw-bold">{{ payroll.employee.department.name|default:"—" }}</div>
+      </div>
+      <div class="grid-item">
+        <div class="text-xs text-muted">Status</div>
+        <span class="badge badge-{{ payroll.status }}">{{ payroll.get_status_display }}</span>
+      </div>
+    </div>
+
+    <!-- Earnings -->
+    <h4 class="text-navy" style="margin-bottom:0.75rem; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em;">Earnings</h4>
+    <div class="payslip-row"><span class="label">Basic Salary</span><span class="value">{{ payroll.basic_salary }}</span></div>
+    <div class="payslip-row"><span class="label">House Rent Allowance</span><span class="value">{{ payroll.house_rent }}</span></div>
+    <div class="payslip-row"><span class="label">Medical Allowance</span><span class="value">{{ payroll.medical_allowance }}</span></div>
+    <div class="payslip-row"><span class="label">Transport Allowance</span><span class="value">{{ payroll.transport_allowance }}</span></div>
+    <div class="payslip-row"><span class="label">Other Allowances</span><span class="value">{{ payroll.other_allowances }}</span></div>
+
+    <br>
+    <!-- Deductions -->
+    <h4 class="text-navy" style="margin-bottom:0.75rem; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em;">Deductions</h4>
+    <div class="payslip-row"><span class="label">Tax</span><span class="value" style="color:var(--danger);">-{{ payroll.tax_deduction }}</span></div>
+    <div class="payslip-row"><span class="label">Other Deductions</span><span class="value" style="color:var(--danger);">-{{ payroll.other_deductions }}</span></div>
+  </div>
+
+  <div class="payslip-total">
+    <span>NET SALARY</span>
+    <span>{{ payroll.net_salary }}</span>
+  </div>
+</div>
+
+{% if payroll.notes %}
+<div class="card" style="margin-top:1rem; max-width:700px;">
+  <div class="card-body">
+    <div class="text-xs text-muted">Notes</div>
+    <p class="text-sm" style="margin-top:0.25rem;">{{ payroll.notes }}</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

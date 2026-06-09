@@ -1,0 +1,42 @@
+{% extends 'employees/base.html' %}
+{% block title %}Departments{% endblock %}
+{% block page_title %}Departments{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>Departments</h2>
+    <div class="breadcrumb"><a href="{% url 'dashboard' %}">Home</a> › Departments</div>
+  </div>
+  <a href="{% url 'department_create' %}" class="btn btn-primary">+ Add Department</a>
+</div>
+
+<div class="row-3 grid-container">
+  {% for dept in departments %}
+  <div class="grid-item dept-card">
+    <div class="dept-card-code">{{ dept.code }}</div>
+    <div class="dept-card-name">{{ dept.name }}</div>
+    <div class="dept-card-count">{{ dept.emp_count }} employee{{ dept.emp_count|pluralize }}</div>
+    {% if dept.description %}
+      <p class="text-sm text-muted mt-1" style="margin-top:0.5rem;">{{ dept.description|truncatechars:80 }}</p>
+    {% endif %}
+    {% if dept.manager %}
+      <p class="text-xs text-muted" style="margin-top:0.5rem;">Manager: {{ dept.manager.full_name }}</p>
+    {% endif %}
+    <div class="btn-group" style="margin-top:1rem;">
+      <a href="{% url 'department_edit' dept.pk %}" class="btn btn-outline btn-sm">Edit</a>
+      <a href="{% url 'department_delete' dept.pk %}" class="btn btn-danger btn-sm">Delete</a>
+    </div>
+  </div>
+  {% empty %}
+  <div class="grid-item" style="grid-column:1/-1;">
+    <div class="empty-state">
+      <div class="empty-state-icon">🏢</div>
+      <h3>No Departments Yet</h3>
+      <p>Create your first department to get started.</p>
+      <a href="{% url 'department_create' %}" class="btn btn-primary" style="margin-top:1rem;">+ Add Department</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

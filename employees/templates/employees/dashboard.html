@@ -1,0 +1,135 @@
+{% extends 'employees/base.html' %}
+{% block title %}Dashboard — HR System{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>Welcome back, {{ request.user.username }} 👋</h2>
+    <div class="breadcrumb">Overview of your HR operations</div>
+  </div>
+</div>
+
+<!-- Stat Cards Row -->
+<div class="row-4 grid-container" style="margin-bottom:1.5rem;">
+  <div class="grid-item stat-card accent-1">
+    <div class="stat-icon">👥</div>
+    <div class="stat-label">Active Employees</div>
+    <div class="stat-value">{{ total_employees }}</div>
+  </div>
+  <div class="grid-item stat-card accent-2">
+    <div class="stat-icon">🏢</div>
+    <div class="stat-label">Departments</div>
+    <div class="stat-value">{{ total_departments }}</div>
+  </div>
+  <div class="grid-item stat-card accent-3">
+    <div class="stat-icon">🌴</div>
+    <div class="stat-label">Pending Leaves</div>
+    <div class="stat-value">{{ pending_leaves }}</div>
+  </div>
+  <div class="grid-item stat-card accent-4">
+    <div class="stat-icon">📋</div>
+    <div class="stat-label">New Applications</div>
+    <div class="stat-value">{{ new_applications }}</div>
+  </div>
+</div>
+
+<!-- Middle Row: Recent Employees + Departments -->
+<div class="row-8 grid-container" style="margin-bottom:1.5rem;">
+  <!-- Recent Employees -->
+  <div class="grid-item card">
+    <div class="card-header">
+      <h3>Recent Employees</h3>
+      <a href="{% url 'employee_list' %}" class="btn btn-outline btn-sm">View All</a>
+    </div>
+    <div class="table-wrapper" style="border:none; box-shadow:none;">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for emp in recent_employees %}
+          <tr>
+            <td>
+              <a href="{% url 'employee_detail' emp.pk %}" class="fw-bold text-navy">{{ emp.full_name }}</a>
+              <div class="text-xs text-muted">{{ emp.designation }}</div>
+            </td>
+            <td>{{ emp.department.name|default:"—" }}</td>
+            <td><span class="badge badge-{{ emp.status }}">{{ emp.get_status_display }}</span></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-muted" style="text-align:center; padding:2rem;">No employees yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Departments -->
+  <div class="grid-item card">
+    <div class="card-header">
+      <h3>Departments</h3>
+      <a href="{% url 'department_list' %}" class="btn btn-outline btn-sm">View All</a>
+    </div>
+    <div class="card-body">
+      {% for dept in departments %}
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid var(--border);">
+        <div>
+          <div class="fw-bold text-navy" style="font-size:0.9rem;">{{ dept.name }}</div>
+          <div class="text-xs text-muted">{{ dept.code }}</div>
+        </div>
+        <span class="badge badge-active">{{ dept.emp_count }} staff</span>
+      </div>
+      {% empty %}
+      <p class="text-muted text-sm">No departments yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Row: Recent Leaves + Quick Actions -->
+<div class="row-9 grid-container">
+  <!-- Recent Leave Requests -->
+  <div class="grid-item card">
+    <div class="card-header">
+      <h3>Recent Leave Requests</h3>
+      <a href="{% url 'leave_list' %}" class="btn btn-outline btn-sm">View All</a>
+    </div>
+    <div class="table-wrapper" style="border:none; box-shadow:none;">
+      <table>
+        <thead>
+          <tr><th>Employee</th><th>Type</th><th>Days</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for leave in recent_leaves %}
+          <tr>
+            <td class="fw-bold">{{ leave.employee.full_name }}</td>
+            <td>{{ leave.get_leave_type_display }}</td>
+            <td>{{ leave.total_days }}</td>
+            <td><span class="badge badge-{{ leave.status }}">{{ leave.get_status_display }}</span></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" class="text-muted" style="text-align:center; padding:2rem;">No leave requests.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="grid-item card">
+    <div class="card-header"><h3>Quick Actions</h3></div>
+    <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
+      <a href="{% url 'employee_create' %}" class="btn btn-primary">👤 Add Employee</a>
+      <a href="{% url 'attendance_create' %}" class="btn btn-secondary">📅 Mark Attendance</a>
+      <a href="{% url 'leave_create' %}" class="btn btn-outline">🌴 New Leave Request</a>
+      <a href="{% url 'payroll_create' %}" class="btn btn-outline">💰 Create Payroll</a>
+      <a href="{% url 'application_create' %}" class="btn btn-outline">📋 Add Application</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

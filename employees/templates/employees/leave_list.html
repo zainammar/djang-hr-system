@@ -1,0 +1,73 @@
+{% extends 'employees/base.html' %}
+{% block title %}Leave Requests{% endblock %}
+{% block page_title %}Leave Requests{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>Leave Requests</h2>
+    <div class="breadcrumb"><a href="{% url 'dashboard' %}">Home</a> › Leave Requests</div>
+  </div>
+  <a href="{% url 'leave_create' %}" class="btn btn-primary">+ New Request</a>
+</div>
+
+<form method="get" class="filter-bar">
+  <select name="status" onchange="this.form.submit()">
+    <option value="">All Statuses</option>
+    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+    <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+    <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+    <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+  </select>
+  {% if status_filter %}
+    <a href="{% url 'leave_list' %}" class="btn btn-outline btn-sm">Clear</a>
+  {% endif %}
+</form>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Leave Type</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Days</th>
+        <th>Applied On</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for leave in leaves %}
+      <tr>
+        <td class="fw-bold">{{ leave.employee.full_name }}</td>
+        <td class="text-sm">{{ leave.get_leave_type_display }}</td>
+        <td class="text-sm">{{ leave.start_date }}</td>
+        <td class="text-sm">{{ leave.end_date }}</td>
+        <td class="text-sm">{{ leave.total_days }}</td>
+        <td class="text-sm text-muted">{{ leave.applied_on|date:"d M Y" }}</td>
+        <td><span class="badge badge-{{ leave.status }}">{{ leave.get_status_display }}</span></td>
+        <td>
+          <div class="btn-group">
+            {% if leave.status == 'pending' %}
+              <a href="{% url 'leave_review' leave.pk %}" class="btn btn-secondary btn-sm">Review</a>
+            {% endif %}
+            <a href="{% url 'leave_delete' leave.pk %}" class="btn btn-danger btn-sm">Del</a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8">
+          <div class="empty-state">
+            <div class="empty-state-icon">🌴</div>
+            <h3>No Leave Requests</h3>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
