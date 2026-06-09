@@ -1,0 +1,21 @@
+<h2>My Profile</h2>
+
+{% if user_obj.profile_image %}
+<img src="{{ user_obj.profile_image.url }}"
+     width="120">
+{% endif %}
+
+<p>Name: {{ user_obj.get_full_name }}</p>
+<p>Department: {{ user_obj.department }}</p>
+<p>Designation: {{ user_obj.designation }}</p>
+
+{% if request.user.is_staff %}
+<p>Salary: Rs. {{ user_obj.salary }}</p>
+
+{% if request.user == user_obj or request.user.is_staff %}
+    <p>Salary: Rs. {{ user_obj.salary }}</p>
+{% endif %}
+
+
+
+{% endif %}
