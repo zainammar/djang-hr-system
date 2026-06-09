@@ -1,0 +1,36 @@
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+
+# Environment #
+.env
+.venv
+env/
+venv/
+pos_env/
+
+# Python #
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+
+# IDE / Editor #
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files #
+.DS_Store
+Thumbs.dbecho "# pos" >> README.md
