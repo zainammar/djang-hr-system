@@ -1,21 +1,74 @@
-<h2>My Profile</h2>
-
-{% if user_obj.profile_image %}
-<img src="{{ user_obj.profile_image.url }}"
-     width="120">
-{% endif %}
-
-<p>Name: {{ user_obj.get_full_name }}</p>
-<p>Department: {{ user_obj.department }}</p>
-<p>Designation: {{ user_obj.designation }}</p>
-
-{% if request.user.is_staff %}
-<p>Salary: Rs. {{ user_obj.salary }}</p>
-
-{% if request.user == user_obj or request.user.is_staff %}
-    <p>Salary: Rs. {{ user_obj.salary }}</p>
-{% endif %}
-
-
-
-{% endif %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn { padding: 10px 20px; color: white; text-decoration: none; border-radius: 5px; display: inline-block; }
+        .btn-primary { background: #2196F3; }
+        .btn-primary:hover { background: #0b7dda; }
+        .btn-secondary { background: #4CAF50; }
+        .btn-secondary:hover { background: #45a049; }
+        .profile-card { background: #f5f5f5; padding: 30px; border-radius: 10px; margin: 20px 0; }
+        .profile-info { margin: 10px 0; }
+        .profile-info label { font-weight: bold; color: #555; }
+        .profile-info p { margin: 5px 0 15px 0; color: #333; }
+        .nav-buttons { display: flex; gap: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>User Profile</h2>
+        <div class="nav-buttons">
+            <a href="{% url 'home' %}" class="btn btn-primary">Home</a>
+        </div>
+    </div>
+    
+    <div class="profile-card">
+        <h3>{{ user.username }}'s Profile</h3>
+        
+        <div class="profile-info">
+            <label>Username:</label>
+            <p>{{ user.username }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>Email:</label>
+            <p>{{ user.email|default:"Not provided" }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>First Name:</label>
+            <p>{{ user.first_name|default:"Not provided" }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>Last Name:</label>
+            <p>{{ user.last_name|default:"Not provided" }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>Bio:</label>
+            <p>{{ user.profile.bio|default:"No bio provided" }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>Location:</label>
+            <p>{{ user.profile.location|default:"Not provided" }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>Birth Date:</label>
+            <p>{{ user.profile.birth_date|default:"Not provided" }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>Phone:</label>
+            <p>{{ user.profile.phone|default:"Not provided" }}</p>
+        </div>
+        
+        <a href="{% url 'profile_edit' %}" class="btn btn-secondary">Edit Profile</a>
+    </div>
+</body>
+</html>

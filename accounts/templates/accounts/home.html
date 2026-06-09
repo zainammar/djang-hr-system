@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn { padding: 10px 20px; color: white; text-decoration: none; border-radius: 5px; display: inline-block; margin-left: 10px; }
+        .btn-primary { background: #2196F3; }
+        .btn-primary:hover { background: #0b7dda; }
+        .btn-success { background: #4CAF50; }
+        .btn-success:hover { background: #45a049; }
+        .btn-danger { background: #f44336; }
+        .btn-danger:hover { background: #da190b; }
+        .welcome { background: #e3f2fd; padding: 20px; margin: 20px 0; border-radius: 5px; }
+        .nav-buttons { display: flex; gap: 10px; }
+        .profile-preview { display: flex; align-items: center; gap: 15px; margin: 20px 0; }
+        .profile-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Home Page</h2>
+        <div class="nav-buttons">
+            <a href="{% url 'user_list' %}" class="btn btn-success">Browse Users</a>
+            <a href="{% url 'profile' %}" class="btn btn-primary">My Profile</a>
+            <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+    <div class="welcome">
+        <div class="profile-preview">
+            <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" class="profile-img">
+            <div>
+                <h3>Welcome, {{ user.username }}!</h3>
+                <p>You are successfully logged in.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

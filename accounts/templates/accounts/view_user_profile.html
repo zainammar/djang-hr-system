@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ profile_user.username }}'s Profile</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn { padding: 10px 20px; color: white; text-decoration: none; border-radius: 5px; display: inline-block; }
+        .btn-primary { background: #2196F3; }
+        .btn-primary:hover { background: #0b7dda; }
+        .btn-success { background: #4CAF50; }
+        .btn-success:hover { background: #45a049; }
+        .profile-card { background: #f5f5f5; padding: 30px; border-radius: 10px; margin: 20px 0; }
+        .profile-header { display: flex; gap: 30px; align-items: center; margin-bottom: 30px; }
+        .profile-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #2196F3; }
+        .profile-info { margin: 10px 0; }
+        .profile-info label { font-weight: bold; color: #555; }
+        .profile-info p { margin: 5px 0 15px 0; color: #333; }
+        .nav-buttons { display: flex; gap: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>{{ profile_user.username }}'s Profile</h2>
+        <div class="nav-buttons">
+            <a href="{% url 'user_list' %}" class="btn btn-success">Back to Users</a>
+            <a href="{% url 'home' %}" class="btn btn-primary">Home</a>
+        </div>
+    </div>
+    
+    <div class="profile-card">
+        <div class="profile-header">
+            <img src="{{ profile_user.profile.profile_picture.url }}" alt="Profile Picture" class="profile-img">
+            <div>
+                <h2>{{ profile_user.username }}</h2>
+                {% if profile_user.first_name or profile_user.last_name %}
+                    <p style="color: #666;">{{ profile_user.first_name }} {{ profile_user.last_name }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="profile-info">
+            <label>Bio:</label>
+            <p>{{ profile_user.profile.bio|default:"No bio provided" }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>Location:</label>
+            <p>{{ profile_user.profile.location|default:"Not provided" }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>Member Since:</label>
+            <p>{{ profile_user.date_joined|date:"F d, Y" }}</p>
+        </div>
+    </div>
+</body>
+</html>
