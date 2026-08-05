@@ -1,83 +1,215 @@
+
 {% extends 'employees/base.html' %}
+
 {% block title %}Employees{% endblock %}
 {% block page_title %}Employees{% endblock %}
 
 {% block content %}
+
 <div class="page-header">
-  <div>
-    <h2>Employees</h2>
-    <div class="breadcrumb"><a href="{% url 'dashboard' %}">Home</a> › Employees</div>
-  </div>
-  <a href="{% url 'employee_create' %}" class="btn btn-primary">+ Add Employee</a>
+    <div>
+        <h2>Employees</h2>
+        <p class="breadcrumb">
+            Home / Employees
+            <span class="text-muted">({{ employees|length }} Employees)</span>
+        </p>
+    </div>
+
+    <a href="{% url 'employee_create' %}" class="btn btn-primary">
+        ➕ Add Employee
+    </a>
 </div>
 
-<!-- Filter Bar -->
-<form method="get" class="filter-bar">
-  <select name="department" onchange="this.form.submit()">
-    <option value="">All Departments</option>
-    {% for dept in departments %}
-      <option value="{{ dept.pk }}" {% if dept_filter == dept.pk|stringformat:"s" %}selected{% endif %}>{{ dept.name }}</option>
-    {% endfor %}
-  </select>
-  <select name="status" onchange="this.form.submit()">
-    <option value="">All Statuses</option>
-    <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
-    <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
-    <option value="on_leave" {% if status_filter == 'on_leave' %}selected{% endif %}>On Leave</option>
-  </select>
-  {% if dept_filter or status_filter %}
-    <a href="{% url 'employee_list' %}" class="btn btn-outline btn-sm">Clear</a>
-  {% endif %}
-</form>
+<div class="card">
 
-<div class="table-wrapper">
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Department</th>
-        <th>Designation</th>
-        <th>Email</th>
-        <th>Date Joined</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for emp in employees %}
-      <tr>
-        <td class="text-muted text-sm">{{ emp.employee_id }}</td>
-        <td>
-          <a href="{% url 'employee_detail' emp.pk %}" class="fw-bold text-navy">
-            {{ emp.full_name }}
-          </a>
-        </td>
-        <td>{{ emp.department.name|default:"—" }}</td>
-        <td>{{ emp.designation|default:"—" }}</td>
-        <td class="text-sm">{{ emp.email }}</td>
-        <td class="text-sm">{{ emp.date_joined }}</td>
-        <td><span class="badge badge-{{ emp.status }}">{{ emp.get_status_display }}</span></td>
-        <td>
-          <div class="btn-group">
-            <a href="{% url 'employee_detail' emp.pk %}" class="btn btn-secondary btn-sm">View</a>
-            <a href="{% url 'employee_edit' emp.pk %}" class="btn btn-outline btn-sm">Edit</a>
-            <a href="{% url 'employee_delete' emp.pk %}" class="btn btn-danger btn-sm">Del</a>
-          </div>
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="8">
-          <div class="empty-state">
-            <div class="empty-state-icon">👥</div>
-            <h3>No Employees Found</h3>
-            <p>Try adjusting your filters or add a new employee.</p>
-          </div>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <form method="get" class="d-flex" style="gap:10px;flex-wrap:wrap;">
+
+            <input
+                type="text"
+                name="search"
+                value="{{ request.GET.search }}"
+                placeholder="Search employee..."
+                class="form-control">
+
+            <select name="department" class="form-control">
+
+                <option value="">All Departments</option>
+
+                {% for dept in departments %}
+                <option value="{{ dept.id }}"
+                    {% if request.GET.department == dept.id|stringformat:"s" %}selected{% endif %}>
+                    {{ dept.name }}
+                </option>
+                {% endfor %}
+
+            </select>
+
+            <select name="status" class="form-control">
+
+                <option value="">All Status</option>
+
+                <option value="active"
+                    {% if request.GET.status == "active" %}selected{% endif %}>
+                    Active
+                </option>
+
+                <option value="inactive"
+                    {% if request.GET.status == "inactive" %}selected{% endif %}>
+                    Inactive
+                </option>
+
+                <option value="on_leave"
+                    {% if request.GET.status == "on_leave" %}selected{% endif %}>
+                    On Leave
+                </option>
+
+            </select>
+
+            <button class="btn btn-secondary">
+                Search
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+            <tr>
+
+                <th>Photo</th>
+
+                <th>Employee</th>
+
+                <th>Department</th>
+
+                <th>Designation</th>
+
+                <th>Email</th>
+
+                <th>Joined</th>
+
+                <th>Status</th>
+
+                <th width="180">Action</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for emp in employees %}
+
+            <tr>
+
+                <td width="70">
+
+                    {% if emp.profile_photo %}
+                        <img src="{{ emp.profile_photo.url }}"
+                             class="avatar">
+                    {% else %}
+                        <img src="https://ui-avatars.com/api/?name={{ emp.first_name }}+{{ emp.last_name }}"
+                             class="avatar">
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <strong>
+                        {{ emp.full_name }}
+                    </strong>
+
+                    <br>
+
+                    <small>
+                        {{ emp.employee_id }}
+                    </small>
+
+                </td>
+
+                <td>
+
+                    {{ emp.department|default:"-" }}
+
+                </td>
+
+                <td>
+
+                    {{ emp.designation }}
+
+                </td>
+
+                <td>
+
+                    {{ emp.email }}
+
+                </td>
+
+                <td>
+
+                    {{ emp.date_joined }}
+
+                </td>
+
+                <td>
+
+                    <span class="badge badge-{{ emp.status }}">
+                        {{ emp.get_status_display }}
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <a href="{% url 'employee_detail' emp.id %}"
+                       class="btn btn-sm btn-secondary">
+                        View
+                    </a>
+
+                    <a href="{% url 'employee_edit' emp.id %}"
+                       class="btn btn-sm btn-primary">
+                        Edit
+                    </a>
+
+                    <a href="{% url 'employee_delete' emp.id %}"
+                       class="btn btn-sm btn-danger">
+                        Delete
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="8" style="text-align:center;padding:40px;">
+
+                    <h3>No Employees Found</h3>
+
+                    <p>Add your first employee.</p>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </div>
+
 {% endblock %}

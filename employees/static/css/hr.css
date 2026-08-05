@@ -858,3 +858,23 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .align-center { align-items: center; }
 .gap-sm       { gap: 0.5rem; }
 .gap-md       { gap: 1rem; }
+
+
+.avatar{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid #ddd;
+}
+
+.form-control{
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  min-width:180px;
+}
+
+.card-header{
+  padding:20px;
+}

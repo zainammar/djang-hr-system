@@ -182,3 +182,30 @@ class JobApplication(models.Model):
 
     def __str__(self):
         return f"{self.applicant_name} - {self.applied_for}"
+
+
+
+
+
+class EmployeeContact(models.Model):
+
+    employee = models.OneToOneField(
+        Employee,
+        on_delete=models.CASCADE,
+        related_name="contact"
+    )
+
+    address = models.TextField()
+
+    city = models.CharField(max_length=100)
+
+    state = models.CharField(max_length=100)
+
+    country = models.CharField(max_length=100)
+
+    postal_code = models.CharField(max_length=20)
+
+    alternate_phone = models.CharField(
+        max_length=20,
+        blank=True
+    )
